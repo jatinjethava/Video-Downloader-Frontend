@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useId } from 'react';
+import { useState, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { VideoResult, VideoFormat } from '../types/video';
 
@@ -15,6 +15,23 @@ interface DetectedPlatform {
   name: string;
   color: string;
 }
+
+export interface PreservedDownload {
+  id: string;
+  jobId: string;
+  url: string;
+  title: string;
+  thumbnail?: string;
+  quality: string;
+  extension: string;
+  formattedSize?: string;
+  downloadUrl: string;
+  timestamp: number;
+}
+
+const STORAGE_KEY_URL = 'vidfetch_persisted_url';
+const STORAGE_KEY_RESULT = 'vidfetch_persisted_result';
+const STORAGE_KEY_DOWNLOADS = 'vidfetch_preserved_downloads';
 
 const CURATED_SAMPLES: SampleLink[] = [
   {
@@ -46,9 +63,39 @@ export default function DownloaderSection() {
   const [result, setResult] = useState<VideoResult | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [downloadStatusText, setDownloadStatusText] = useState<{ [id: string]: string }>({});
+  const [completedDownloads, setCompletedDownloads] = useState<{ [formatId: string]: string }>({});
+  const [preservedDownloads, setPreservedDownloads] = useState<PreservedDownload[]>([]);
   const [activeTab, setActiveTab] = useState<'video' | 'audio'>('video');
   const inputId = useId();
 
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const savedUrl = localStorage.getItem(STORAGE_KEY_URL);
+      if (savedUrl) {
+        setUrl(savedUrl);
+      }
+
+      const savedResult = localStorage.getItem(STORAGE_KEY_RESULT);
+      if (savedResult) {
+        const parsed = JSON.parse(savedResult);
+        if (parsed && parsed.title && Array.isArray(parsed.formats)) {
+          setResult(parsed as VideoResult);
+        }
+      }
+
+      const savedDownloads = localStorage.getItem(STORAGE_KEY_DOWNLOADS);
+      if (savedDownloads) {
+        const parsedDownloads = JSON.parse(savedDownloads);
+        if (Array.isArray(parsedDownloads)) {
+          setPreservedDownloads(parsedDownloads);
+        }
+      }
+    } catch {
+    }
+  }, []);
 
   const detectInputPlatform = (inputUrl: string): DetectedPlatform | null => {
     if (!inputUrl) return null;
@@ -85,13 +132,28 @@ export default function DownloaderSection() {
 
   const detected = detectInputPlatform(url);
 
+  const handleClear = () => {
+    setUrl('');
+    setResult(null);
+    setError('');
+    setCompletedDownloads({});
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY_URL);
+      localStorage.removeItem(STORAGE_KEY_RESULT);
+    }
+  };
+
   const handlePaste = async () => {
     try {
       if (navigator.clipboard) {
         const text = await navigator.clipboard.readText();
         if (text) {
-          setUrl(text.trim());
+          const trimmed = text.trim();
+          setUrl(trimmed);
           setError('');
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(STORAGE_KEY_URL, trimmed);
+          }
         }
       }
     } catch {
@@ -112,9 +174,6 @@ export default function DownloaderSection() {
 
     setLoading(true);
     setError('');
-    setResult(null);
-
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
 
     try {
       const response = await fetch(`${backendUrl}/api/video/info`, {
@@ -130,6 +189,10 @@ export default function DownloaderSection() {
       }
 
       setResult(data as VideoResult);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEY_URL, finalUrl);
+        localStorage.setItem(STORAGE_KEY_RESULT, JSON.stringify(data));
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Could not reach the extraction backend engine.';
       setError(msg);
@@ -140,22 +203,31 @@ export default function DownloaderSection() {
 
   const handleDownload = async (format: VideoFormat) => {
     if (!result || downloadingId) return;
+
+    if (completedDownloads[format.formatId]) {
+      const directLink = `${backendUrl}${completedDownloads[format.formatId]}`;
+      const a = document.createElement('a');
+      a.href = directLink;
+      a.download = '';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      return;
+    }
+
     setDownloadingId(format.formatId);
     setDownloadStatusText((prev) => ({ ...prev, [format.formatId]: 'Queueing...' }));
     setError('');
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:5000';
-
     try {
-
       const queueResponse = await fetch(`${backendUrl}/api/video/queue-download`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           url: result.url,
           title: result.title,
-          formatId: format.formatId
-        })
+          formatId: format.formatId,
+        }),
       });
 
       if (!queueResponse.ok) {
@@ -165,7 +237,6 @@ export default function DownloaderSection() {
       const queueData = await queueResponse.json();
       if (!queueData.success) throw new Error(queueData.error);
       const jobId = queueData.jobId;
-
 
       const pollStatus = async () => {
         try {
@@ -182,14 +253,37 @@ export default function DownloaderSection() {
 
           if (job.status === 'completed' && job.result?.downloadUrl) {
             setDownloadStatusText((prev) => ({ ...prev, [format.formatId]: 'Complete! ✓' }));
+            setCompletedDownloads((prev) => ({ ...prev, [format.formatId]: job.result.downloadUrl }));
 
-
+            const fullDownloadUrl = `${backendUrl}${job.result.downloadUrl}`;
             const downloadLink = document.createElement('a');
-            downloadLink.href = `${backendUrl}${job.result.downloadUrl}`;
+            downloadLink.href = fullDownloadUrl;
             downloadLink.download = '';
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
+
+            const newRecord: PreservedDownload = {
+              id: `${jobId}-${Date.now()}`,
+              jobId: jobId,
+              url: result?.url || url,
+              title: result?.title || job.result?.title || 'Saved Video',
+              thumbnail: result?.thumbnail,
+              quality: format.quality || format.resolution || 'HD',
+              extension: format.extension || 'mp4',
+              formattedSize: format.formattedSize || '',
+              downloadUrl: job.result.downloadUrl,
+              timestamp: Date.now(),
+            };
+
+            setPreservedDownloads((prev) => {
+              const filtered = prev.filter((p) => p.jobId !== jobId);
+              const updated = [newRecord, ...filtered].slice(0, 12);
+              if (typeof window !== 'undefined') {
+                localStorage.setItem(STORAGE_KEY_DOWNLOADS, JSON.stringify(updated));
+              }
+              return updated;
+            });
 
             setTimeout(() => {
               setDownloadingId(null);
@@ -216,9 +310,7 @@ export default function DownloaderSection() {
         }
       };
 
-
       setTimeout(pollStatus, 1500);
-
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Download failed to initialize.';
       setError(msg);
@@ -229,6 +321,33 @@ export default function DownloaderSection() {
         return next;
       });
     }
+  };
+
+  const handleRemoveDownload = (id: string) => {
+    setPreservedDownloads((prev) => {
+      const updated = prev.filter((item) => item.id !== id);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEY_DOWNLOADS, JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
+  const handleClearAllDownloads = () => {
+    setPreservedDownloads([]);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY_DOWNLOADS);
+    }
+  };
+
+  const formatTimeAgo = (timestamp: number) => {
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    if (seconds < 60) return 'Just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
   };
 
   const filteredFormats: VideoFormat[] = result?.formats
@@ -286,8 +405,16 @@ export default function DownloaderSection() {
                 placeholder="Paste video URL (YouTube, IG, X, TikTok...)"
                 value={url}
                 onChange={(e) => {
-                  setUrl(e.target.value);
+                  const val = e.target.value;
+                  setUrl(val);
                   setError('');
+                  if (typeof window !== 'undefined') {
+                    if (val) {
+                      localStorage.setItem(STORAGE_KEY_URL, val);
+                    } else {
+                      localStorage.removeItem(STORAGE_KEY_URL);
+                    }
+                  }
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleFetch();
@@ -300,11 +427,7 @@ export default function DownloaderSection() {
                   <button
                     type="button"
                     className="clear-icon-btn"
-                    onClick={() => {
-                      setUrl('');
-                      setResult(null);
-                      setError('');
-                    }}
+                    onClick={handleClear}
                     title="Clear input"
                     aria-label="Clear field"
                   >
@@ -509,15 +632,22 @@ export default function DownloaderSection() {
 
                         <button
                           type="button"
-                          className={`btn-luxury-download ${downloadingId === format.formatId ? 'downloading' : ''}`}
+                          className={`btn-luxury-download ${downloadingId === format.formatId ? 'downloading' : ''} ${completedDownloads[format.formatId] ? 'downloaded-ready' : ''}`}
                           onClick={() => handleDownload(format)}
-                          disabled={!!downloadingId}
+                          disabled={!!downloadingId && downloadingId !== format.formatId}
                           id={`download-btn-${format.formatId}`}
                         >
                           {downloadingId === format.formatId ? (
                             <>
                               <span className="luxury-spinner-gold"></span>
                               <span>{downloadStatusText[format.formatId] || 'Processing...'}</span>
+                            </>
+                          ) : completedDownloads[format.formatId] ? (
+                            <>
+                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                                <path d="M20 6L9 17l-5-5"></path>
+                              </svg>
+                              <span>Ready • Save Again</span>
                             </>
                           ) : (
                             <>
@@ -537,7 +667,6 @@ export default function DownloaderSection() {
                       <div className="stream-quality-advisory">
                         <span style={{ fontSize: '1.1rem' }}>💡</span>
                         <div>
-
                           <strong>High-Definition Note:</strong> YouTube server restricts 720p/1080p for this copyright/VEVO video unless authenticated. Add a <code>cookies.txt</code> file in the <code>backend</code> directory to unlock Full HD & 4K for all protected videos.
                         </div>
                       </div>
@@ -552,6 +681,94 @@ export default function DownloaderSection() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {preservedDownloads.length > 0 && (
+          <motion.div
+            className="vault-section luxury-card"
+            id="preserved-downloads-vault"
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="vault-header">
+              <div className="vault-title-wrap">
+                <div className="vault-icon-badge">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="vault-heading editorial-title">Preserved Downloads</h3>
+                  <p className="vault-subtext">Retained across reloads — instantly save or re-download your prepared media</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="vault-btn-clear"
+                onClick={handleClearAllDownloads}
+                title="Clear all stored downloads"
+                id="clear-vault-btn"
+              >
+                Clear History
+              </button>
+            </div>
+
+            <div className="vault-items-grid">
+              {preservedDownloads.map((item) => (
+                <div key={item.id} className="vault-item-card" id={`vault-item-${item.id}`}>
+                  <div className="vault-item-preview">
+                    {item.thumbnail ? (
+                      <img src={item.thumbnail} alt={item.title} className="vault-item-img" />
+                    ) : (
+                      <div className="vault-item-placeholder">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold-primary)" strokeWidth="1.8">
+                          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                      </div>
+                    )}
+                    <span className="vault-badge-quality">{item.quality}</span>
+                  </div>
+
+                  <div className="vault-item-details">
+                    <h4 className="vault-item-title">{item.title}</h4>
+                    <div className="vault-item-chips">
+                      <span className="vault-chip-fmt">.{item.extension.toUpperCase()}</span>
+                      {item.formattedSize && <span className="vault-chip-size">{item.formattedSize}</span>}
+                      <span className="vault-chip-time">{formatTimeAgo(item.timestamp)}</span>
+                    </div>
+                  </div>
+
+                  <div className="vault-item-actions">
+                    <a
+                      href={`${backendUrl}${item.downloadUrl}`}
+                      download
+                      className="btn-vault-save"
+                      id={`vault-save-${item.id}`}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                      </svg>
+                      <span>Save Video</span>
+                    </a>
+                    <button
+                      type="button"
+                      className="btn-vault-delete"
+                      onClick={() => handleRemoveDownload(item.id)}
+                      title="Remove from history"
+                      aria-label="Remove download item"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   );
