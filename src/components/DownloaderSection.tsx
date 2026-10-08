@@ -226,22 +226,30 @@ export default function DownloaderSection() {
     setError('');
 
     try {
+      const targetUrl = result?.url || url;
+      const targetTitle = result?.title || 'Video';
+
       const queueResponse = await fetch(`${backendUrl}/api/video/queue-download`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          url: result.url,
-          title: result.title,
+          url: targetUrl,
+          title: targetTitle,
           formatId: format.formatId,
         }),
       });
 
-      if (!queueResponse.ok) {
-        throw new Error('Failed to queue download on server.');
+      let queueData: any = null;
+      try {
+        queueData = await queueResponse.json();
+      } catch {
+        queueData = null;
       }
 
-      const queueData = await queueResponse.json();
-      if (!queueData.success) throw new Error(queueData.error);
+      if (!queueResponse.ok || !queueData?.success) {
+        throw new Error(queueData?.error || 'Failed to queue download on server.');
+      }
+
       const jobId = queueData.jobId;
 
       const pollStatus = async () => {
