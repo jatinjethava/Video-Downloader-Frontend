@@ -1,36 +1,141 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VidFetch Atelier
+
+VidFetch Atelier is a premium Next.js frontend for extracting and downloading video and audio content from public media links. The interface allows users to paste a URL, analyze the media, inspect available formats, and download the selected version through a connected backend service.
+
+This app focuses on a luxury media experience built for YouTube, Instagram, TikTok, X, Facebook, Vimeo, Reddit, and direct file links.
+
+## Features
+
+- Paste a media URL and detect the source platform automatically
+- Fetch metadata such as title, thumbnail, author, and description
+- Preview available video and audio formats
+- Download content through a queued backend workflow
+- Mobile-friendly, responsive UI with premium styling
+- Support for direct MP4, WebM, MKV, and MOV content
+
+## Supported Sources
+
+- YouTube
+- Instagram Reels / Stories / IGTV
+- TikTok
+- X / Twitter
+- Facebook Watch / public media
+- Vimeo
+- Reddit
+- Direct download media URLs
+
+## Tech Stack
+
+- Next.js 16
+- React 19
+- Framer Motion
+- CSS-based styling via app-level global styles
+- Integration with a backend API for info fetching and downloads
+
+## Project Structure
+
+```bash
+.
+├── Dockerfile
+├── README.md
+├── package.json
+├── next.config.mjs
+├── jsconfig.json
+├── eslint.config.mjs
+├── public/
+├── src/
+│   ├── app/
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── error.tsx
+│   │   └── not-found.tsx
+│   ├── components/
+│   │   ├── DownloaderSection.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── PlatformsGrid.tsx
+│   │   ├── HowItWorks.tsx
+│   │   ├── FeaturesSection.tsx
+│   │   ├── FAQSection.tsx
+│   │   └── Footer.tsx
+│   └── types/
+└── tsconfig.json
+```
+
+## Prerequisites
+
+Before running the app, make sure you have:
+
+- Node.js 20+
+- npm
+- A backend service running and accessible through `NEXT_PUBLIC_BACKEND_URL`
+
+## Environment Variables
+
+Create a `.env.local` file in the frontend root if needed:
+
+```bash
+NEXT_PUBLIC_BACKEND_URL=http://localhost:5000
+```
+
+If your backend runs on a different host or port, update this value.
 
 ## Getting Started
 
-First, run the development server:
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Production Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+## Docker
 
-To learn more about Next.js, take a look at the following resources:
+A Dockerfile is included for containerized setup:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+docker build -t vidfetch-atelier .
+docker run -p 3000:3000 vidfetch-atelier
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Available Scripts
 
-## Deploy on Vercel
+```bash
+npm run dev     # Start the Next.js development server
+npm run build   # Build for production
+npm run start   # Run the production server
+npm run lint    # Run ESLint checks
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Backend API Expectations
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This frontend expects the backend to expose endpoints such as:
+
+- `/api/video/info`
+- `/api/video/queue-download`
+- `/api/video/status/:jobId`
+
+The UI handles the request flow, while the backend performs URL analysis, format extraction, and media delivery.
+
+## Notes
+
+- The app is designed around a premium media-download UX rather than raw utility output.
+- Media extraction and download processing is delegated to the backend service, not handled directly in the frontend.
+
+## Contributing
+
+Contributions are welcome. Please open an issue or start a discussion before making larger changes.
