@@ -63,7 +63,7 @@ export default function DownloaderSection() {
   const [result, setResult] = useState<VideoResult | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [downloadStatusText, setDownloadStatusText] = useState<{ [id: string]: string }>({});
-  const [completedDownloads, setCompletedDownloads] = useState<{ [formatId: string]: string }>({});
+  const [completedDownloads, setCompletedDownloads] = useState<{ [key: string]: string }>({});
   const [preservedDownloads, setPreservedDownloads] = useState<PreservedDownload[]>([]);
   const [activeTab, setActiveTab] = useState<'video' | 'audio'>('video');
   const inputId = useId();
@@ -136,6 +136,8 @@ export default function DownloaderSection() {
     setUrl('');
     setResult(null);
     setError('');
+    setDownloadingId(null);
+    setDownloadStatusText({});
     setCompletedDownloads({});
     if (typeof window !== 'undefined') {
       localStorage.removeItem(STORAGE_KEY_URL);
@@ -174,6 +176,9 @@ export default function DownloaderSection() {
 
     setLoading(true);
     setError('');
+    setDownloadingId(null);
+    setDownloadStatusText({});
+    setCompletedDownloads({});
 
     try {
       const response = await fetch(`${backendUrl}/api/video/info`, {
@@ -204,8 +209,9 @@ export default function DownloaderSection() {
   const handleDownload = async (format: VideoFormat) => {
     if (!result || downloadingId) return;
 
-    if (completedDownloads[format.formatId]) {
-      const directLink = `${backendUrl}${completedDownloads[format.formatId]}`;
+    const downloadKey = `${result.url}::${format.formatId}`;
+    if (completedDownloads[downloadKey]) {
+      const directLink = `${backendUrl}${completedDownloads[downloadKey]}`;
       const a = document.createElement('a');
       a.href = directLink;
       a.download = '';
@@ -253,7 +259,7 @@ export default function DownloaderSection() {
 
           if (job.status === 'completed' && job.result?.downloadUrl) {
             setDownloadStatusText((prev) => ({ ...prev, [format.formatId]: 'Complete! ✓' }));
-            setCompletedDownloads((prev) => ({ ...prev, [format.formatId]: job.result.downloadUrl }));
+            setCompletedDownloads((prev) => ({ ...prev, [downloadKey]: job.result.downloadUrl }));
 
             const fullDownloadUrl = `${backendUrl}${job.result.downloadUrl}`;
             const downloadLink = document.createElement('a');
@@ -619,49 +625,53 @@ export default function DownloaderSection() {
 
                 {filteredFormats.length > 0 ? (
                   <div className="formats-manifest">
-                    {filteredFormats.map((format, idx) => (
-                      <div className="format-row" key={idx} id={`format-card-${format.formatId}`}>
-                        <div className="format-descriptor">
-                          <div className="format-grade">{format.quality}</div>
-                          <div className="format-meta-chips">
-                            <span className="meta-ext-chip">.{format.extension?.toUpperCase() || 'MP4'}</span>
-                            <span className="meta-res-chip">{format.resolution}</span>
-                            <span className="meta-size-chip">{format.formattedSize}</span>
+                    {filteredFormats.map((format, idx) => {
+                      const downloadKey = `${result.url}::${format.formatId}`;
+                      const isReady = !!completedDownloads[downloadKey];
+                      return (
+                        <div className="format-row" key={idx} id={`format-card-${format.formatId}`}>
+                          <div className="format-descriptor">
+                            <div className="format-grade">{format.quality}</div>
+                            <div className="format-meta-chips">
+                              <span className="meta-ext-chip">.{format.extension?.toUpperCase() || 'MP4'}</span>
+                              <span className="meta-res-chip">{format.resolution}</span>
+                              <span className="meta-size-chip">{format.formattedSize}</span>
+                            </div>
                           </div>
-                        </div>
 
-                        <button
-                          type="button"
-                          className={`btn-luxury-download ${downloadingId === format.formatId ? 'downloading' : ''} ${completedDownloads[format.formatId] ? 'downloaded-ready' : ''}`}
-                          onClick={() => handleDownload(format)}
-                          disabled={!!downloadingId && downloadingId !== format.formatId}
-                          id={`download-btn-${format.formatId}`}
-                        >
-                          {downloadingId === format.formatId ? (
-                            <>
-                              <span className="luxury-spinner-gold"></span>
-                              <span>{downloadStatusText[format.formatId] || 'Processing...'}</span>
-                            </>
-                          ) : completedDownloads[format.formatId] ? (
-                            <>
-                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                                <path d="M20 6L9 17l-5-5"></path>
-                              </svg>
-                              <span>Ready • Save Again</span>
-                            </>
-                          ) : (
-                            <>
-                              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                              </svg>
-                              <span>Download Stream</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    ))}
+                          <button
+                            type="button"
+                            className={`btn-luxury-download ${downloadingId === format.formatId ? 'downloading' : ''} ${isReady ? 'downloaded-ready' : ''}`}
+                            onClick={() => handleDownload(format)}
+                            disabled={!!downloadingId && downloadingId !== format.formatId}
+                            id={`download-btn-${format.formatId}`}
+                          >
+                            {downloadingId === format.formatId ? (
+                              <>
+                                <span className="luxury-spinner-gold"></span>
+                                <span>{downloadStatusText[format.formatId] || 'Processing...'}</span>
+                              </>
+                            ) : isReady ? (
+                              <>
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                                  <path d="M20 6L9 17l-5-5"></path>
+                                </svg>
+                                <span>Ready • Save Again</span>
+                              </>
+                            ) : (
+                              <>
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                  <polyline points="7 10 12 15 17 10"></polyline>
+                                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                <span>Download Stream</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      );
+                    })}
 
                     {result.platform?.id === 'youtube' && activeTab === 'video' && !filteredFormats.some((f) => f.formatId === '1080p') && (
                       <div className="stream-quality-advisory">
