@@ -66,7 +66,8 @@ export default function Navbar() {
       setTimeout(() => {
         const targetEl = document.getElementById(targetId);
         if (targetEl) {
-          const navOffset = 76;
+          const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+          const navOffset = isMobile ? 54 : 72;
           const elementPosition = targetEl.getBoundingClientRect().top + window.pageYOffset;
           const offsetPosition = Math.max(0, elementPosition - navOffset);
 
@@ -101,8 +102,43 @@ export default function Navbar() {
           id="brand-logo-link"
           onClick={(e) => handleNavClick(e, '#downloader')}
         >
-          <div className="brand-mark">
-            <span className="brand-monogram">VF</span>
+          <div className="brand-mark" aria-hidden="true">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="brand-logo-svg"
+            >
+              <defs>
+                <linearGradient id="brandGoldGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#faecd0" />
+                  <stop offset="50%" stopColor="#d4af37" />
+                  <stop offset="100%" stopColor="#8f691d" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M4 5.5L9.5 18.5L15 5.5"
+                stroke="url(#brandGoldGrad)"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M13.5 5.5H20"
+                stroke="url(#brandGoldGrad)"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+              />
+              <path
+                d="M13.5 11H18.5"
+                stroke="url(#brandGoldGrad)"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+              />
+              <circle cx="19" cy="16.5" r="1.5" fill="url(#brandGoldGrad)" />
+            </svg>
           </div>
           <div className="brand-typography">
             <span className="brand-title">VIDFETCH</span>
