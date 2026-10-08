@@ -63,22 +63,22 @@ export default function Navbar() {
 
     if (href.startsWith('#')) {
       const targetId = href.replace('#', '');
-      const targetEl = document.getElementById(targetId);
-      if (targetEl) {
-        const navOffset = 76;
-        const bodyRect = document.body.getBoundingClientRect().top;
-        const elementRect = targetEl.getBoundingClientRect().top;
-        const elementPosition = elementRect - bodyRect;
-        const offsetPosition = elementPosition - navOffset;
+      setTimeout(() => {
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          const navOffset = 76;
+          const elementPosition = targetEl.getBoundingClientRect().top + window.pageYOffset;
+          const offsetPosition = Math.max(0, elementPosition - navOffset);
 
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth',
-        });
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth',
+          });
 
-        window.history.pushState(null, '', href);
-        setActiveSection(targetId);
-      }
+          window.history.pushState(null, '', href);
+          setActiveSection(targetId);
+        }
+      }, 50);
     } else {
       window.location.href = href;
     }

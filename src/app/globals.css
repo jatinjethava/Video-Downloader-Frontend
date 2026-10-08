@@ -300,12 +300,18 @@ a {
 }
 
 .mobile-drawer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  width: 100%;
   background: rgba(250, 249, 245, 0.98);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-subtle);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
   overflow: hidden;
+  z-index: 9999;
 }
 
 .mobile-nav-links {
@@ -362,6 +368,7 @@ a {
   .desktop-only {
     display: none !important;
   }
+
   .mobile-only {
     display: flex !important;
   }
