@@ -56,7 +56,6 @@ export default function Navbar() {
           </div>
         </a>
 
-        {/* Desktop Navigation */}
         <nav className="nav-menu desktop-only" aria-label="Main Navigation">
           {navLinks.map((link) => (
             <a key={link.href} href={link.href} className="nav-item" id={link.id}>
@@ -65,7 +64,6 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Status Indicator */}
         <div className="nav-controls desktop-only">
           <div
             className={`telemetry-badge ${backendStatus}`}
@@ -83,7 +81,6 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu Toggle Button */}
         <button
           className="mobile-menu-toggle mobile-only"
           onClick={toggleMobileMenu}
@@ -106,7 +103,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Drawer */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div

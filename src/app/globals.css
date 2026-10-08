@@ -1,5 +1,5 @@
 :root {
-  /* Fluid Typography */
+  
   --text-base: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
   --text-lg: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
   --text-xl: clamp(1.25rem, 1rem + 1.25vw, 1.5rem);
@@ -48,7 +48,6 @@
   --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
   --transition-smooth: 280ms cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Responsive Spacing */
   --section-padding: clamp(48px, 8vw, 90px);
   --section-gap: clamp(24px, 5vw, 55px);
   --card-padding: clamp(20px, 4vw, 30px);
@@ -100,9 +99,6 @@ a {
   transition: color var(--transition-fast);
 }
 
-/* ======================================================================
-   RESPONSIVE CONTAINER SYSTEM
-   ====================================================================== */
 .container {
   width: 100%;
   max-width: 1240px;
@@ -130,9 +126,6 @@ a {
   }
 }
 
-/* ======================================================================
-   SHARED DESIGN TOKENS
-   ====================================================================== */
 .editorial-title {
   font-family: var(--font-serif);
   font-weight: 500;
@@ -148,9 +141,6 @@ a {
   display: inline-block;
 }
 
-/* ======================================================================
-   LUXURY CARD BASE
-   ====================================================================== */
 .luxury-card {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
@@ -164,9 +154,6 @@ a {
   box-shadow: var(--shadow-elevated), var(--gold-glow);
 }
 
-/* ======================================================================
-   BUTTONS
-   ====================================================================== */
 .btn-luxury-primary {
   display: inline-flex;
   align-items: center;
@@ -227,9 +214,6 @@ a {
   color: var(--text-ivory);
 }
 
-/* ======================================================================
-   LOADING SPINNERS
-   ====================================================================== */
 .luxury-spinner {
   width: 18px;
   height: 18px;
@@ -262,7 +246,6 @@ a {
   box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
 }
 
-/* Accessibility Focus States */
 button:focus-visible,
 input:focus-visible,
 a:focus-visible {
@@ -270,9 +253,6 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
-/* ======================================================================
-   COMPONENT: DownloaderSection.tsx — Hero & Console
-   ====================================================================== */
 .studio-hero-section {
   padding: clamp(48px, 8vw, 85px) 0 clamp(48px, 8vw, 100px);
   position: relative;
@@ -372,7 +352,6 @@ a:focus-visible {
   }
 }
 
-/* Console Wrapper */
 .console-wrapper {
   max-width: 920px;
   margin: 0 auto;
@@ -388,7 +367,6 @@ a:focus-visible {
   }
 }
 
-/* Console Input Bar — Mobile First */
 .console-input-bar {
   display: flex;
   flex-direction: column;
@@ -414,7 +392,6 @@ a:focus-visible {
   }
 }
 
-/* Console Field Wrapper — Small & Professional */
 .console-field-wrapper {
   display: flex;
   align-items: center;
@@ -445,7 +422,6 @@ a:focus-visible {
   }
 }
 
-/* Console Icon */
 .console-icon {
   color: var(--text-muted);
   display: flex;
@@ -454,7 +430,6 @@ a:focus-visible {
   flex-shrink: 0;
 }
 
-/* Console Input */
 .console-input {
   flex: 1;
   background: transparent;
@@ -486,7 +461,6 @@ a:focus-visible {
   }
 }
 
-/* Console Actions Cluster */
 .console-actions-cluster {
   display: flex;
   align-items: center;
@@ -494,7 +468,6 @@ a:focus-visible {
   flex-shrink: 0;
 }
 
-/* Telemetry Pill */
 .telemetry-pill {
   display: inline-flex;
   align-items: center;
@@ -572,7 +545,6 @@ a:focus-visible {
   color: var(--text-primary);
 }
 
-/* Paste Button — Compact & Clean */
 .btn-paste-minimal {
   display: inline-flex;
   align-items: center;
@@ -598,7 +570,6 @@ a:focus-visible {
   border-color: var(--gold-border);
 }
 
-/* Console Submit Button — Compact & Professional */
 .console-submit-btn {
   width: 100%;
   border-radius: var(--radius-sm);
@@ -623,7 +594,6 @@ a:focus-visible {
   }
 }
 
-/* Curated Sample Links — Responsive Single-Line Row */
 .curated-row {
   margin-top: 14px;
   display: flex;
@@ -719,7 +689,6 @@ a:focus-visible {
   transform: translateY(-1px);
 }
 
-/* Error Banner */
 .error-banner {
   max-width: 920px;
   margin: 16px auto 0;
@@ -757,9 +726,6 @@ a:focus-visible {
   flex-shrink: 0;
 }
 
-/* ======================================================================
-   COMPONENT: DownloaderSection.tsx — Inspection Result
-   ====================================================================== */
 .inspection-result {
   max-width: 920px;
   margin: 24px auto 0;
@@ -950,7 +916,6 @@ a:focus-visible {
   }
 }
 
-/* Streams & Format Selection */
 .streams-specification {
   border-top: 1px solid var(--border-subtle);
   padding-top: 20px;
@@ -1054,7 +1019,6 @@ a:focus-visible {
   }
 }
 
-/* Format Row — Mobile: stacked, Desktop: row */
 .format-row {
   display: flex;
   flex-direction: column;
@@ -1129,7 +1093,6 @@ a:focus-visible {
   border-radius: var(--radius-xs);
 }
 
-/* Download Button — Small & Professional */
 .btn-luxury-download {
   width: 100%;
   display: inline-flex;
@@ -1206,9 +1169,6 @@ a:focus-visible {
   }
 }
 
-/* ======================================================================
-   COMPONENT: FAQSection.tsx
-   ====================================================================== */
 .inquiries-section {
   padding: var(--section-padding) 0;
   position: relative;
@@ -1340,9 +1300,6 @@ a:focus-visible {
   }
 }
 
-/* ======================================================================
-   COMPONENT: FeaturesSection.tsx (Specifications)
-   ====================================================================== */
 .specifications-section {
   padding: var(--section-padding) 0;
   position: relative;
@@ -1395,7 +1352,6 @@ a:focus-visible {
   line-height: 1.65;
 }
 
-/* Specs Grid — 1 col → 2 col → 3 col */
 .specs-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1480,9 +1436,6 @@ a:focus-visible {
   line-height: 1.6;
 }
 
-/* ======================================================================
-   COMPONENT: Footer.tsx
-   ====================================================================== */
 .footer-root {
   background: var(--bg-surface-elevated);
   border-top: 1px solid var(--border-subtle);
@@ -1497,7 +1450,6 @@ a:focus-visible {
   }
 }
 
-/* Footer Grid — 1 col → 2 col */
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1600,7 +1552,6 @@ a:focus-visible {
   }
 }
 
-/* Footer Nav Matrix — 2 col on mobile */
 .footer-nav-matrix {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1718,7 +1669,6 @@ a:focus-visible {
   }
 }
 
-/* Footer Bottom Bar */
 .footer-bottom-bar {
   display: flex;
   flex-direction: column;
@@ -1762,9 +1712,6 @@ a:focus-visible {
   }
 }
 
-/* ======================================================================
-   COMPONENT: HowItWorks.tsx
-   ====================================================================== */
 .protocol-section {
   padding: var(--section-padding) 0;
   position: relative;
@@ -1817,7 +1764,6 @@ a:focus-visible {
   line-height: 1.65;
 }
 
-/* Protocol Grid — 1 col → 3 col */
 .protocol-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -1897,9 +1843,6 @@ a:focus-visible {
   line-height: 1.65;
 }
 
-/* ======================================================================
-   COMPONENT: Navbar.tsx
-   ====================================================================== */
 .navbar-root {
   position: sticky;
   top: 0;
@@ -2130,9 +2073,6 @@ a:focus-visible {
   }
 }
 
-/* ======================================================================
-   COMPONENT: PlatformsGrid.tsx
-   ====================================================================== */
 .portals-section {
   padding: var(--section-padding) 0;
   position: relative;
@@ -2185,7 +2125,6 @@ a:focus-visible {
   line-height: 1.65;
 }
 
-/* Portals Grid — 1 col → 2 col → 3 col */
 .portals-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -2300,9 +2239,6 @@ a:focus-visible {
   line-height: 1.6;
 }
 
-/* ======================================================================
-   PAGES: Not Found & Error
-   ====================================================================== */
 .not-found-wrapper {
   min-height: 80vh;
   display: flex;
@@ -2381,9 +2317,6 @@ a:focus-visible {
   margin-bottom: 28px;
 }
 
-/* ======================================================================
-   SKELETON LOADING
-   ====================================================================== */
 .skeleton-box {
   background: linear-gradient(90deg, var(--bg-surface-hover) 25%, var(--bg-surface-elevated) 50%, var(--bg-surface-hover) 75%);
   background-size: 200% 100%;
@@ -2400,9 +2333,6 @@ a:focus-visible {
   }
 }
 
-/* ======================================================================
-   MOBILE/DESKTOP VISIBILITY UTILITIES
-   ====================================================================== */
 .desktop-only {
   display: none !important;
 }
@@ -2421,9 +2351,6 @@ a:focus-visible {
   }
 }
 
-/* ======================================================================
-   MOBILE NAVBAR DRAWER
-   ====================================================================== */
 .mobile-menu-toggle {
   background: none;
   border: none;
@@ -2489,9 +2416,6 @@ a:focus-visible {
   justify-content: center;
 }
 
-/* ======================================================================
-   REDUCED MOTION
-   ====================================================================== */
 @media (prefers-reduced-motion: reduce) {
 
   *,

@@ -95,7 +95,6 @@ export default function DownloaderSection() {
         }
       }
     } catch {
-      // clipboard access not permitted in browser security context
     }
   };
 
@@ -203,7 +202,6 @@ export default function DownloaderSection() {
             return;
           }
 
-          // Still waiting/active
           let statusText = 'Waiting in queue...';
           if (job.status === 'active') {
             statusText = `Processing (${job.progress}%)`;
