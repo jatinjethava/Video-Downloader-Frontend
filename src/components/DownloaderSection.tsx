@@ -770,7 +770,8 @@ export default function DownloaderSection() {
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
                       </svg>
-                      <span>Save Video</span>
+                      <span className="vault-save-full">Save Video</span>
+                      <span className="vault-save-short">Save</span>
                     </a>
                     <button
                       type="button"
