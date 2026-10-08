@@ -1766,8 +1766,8 @@ a:focus-visible {
 
 @media (max-width: 640px) {
   .vault-section {
-    padding: 14px 12px;
-    margin-top: 20px;
+    padding: 10px 10px;
+    margin-top: 16px;
     border-radius: var(--radius-sm);
   }
 
@@ -1776,30 +1776,35 @@ a:focus-visible {
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
     border-bottom: 1px solid var(--border-subtle);
   }
 
   .vault-title-wrap {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     flex: 1;
     min-width: 0;
   }
 
   .vault-icon-badge {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    border-radius: 6px;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    border-radius: 5px;
+  }
+
+  .vault-icon-badge svg {
+    width: 13px;
+    height: 13px;
   }
 
   .vault-heading {
-    font-size: 0.92rem;
+    font-size: 0.85rem;
     font-weight: 600;
     margin-bottom: 0;
-    line-height: 1.2;
+    line-height: 1.15;
     white-space: nowrap;
   }
 
@@ -1808,37 +1813,40 @@ a:focus-visible {
   }
 
   .vault-btn-clear {
-    padding: 4px 10px;
-    font-size: 0.65rem;
+    padding: 3px 8px;
+    font-size: 0.6rem;
+    height: 22px;
     border-radius: var(--radius-pill);
     flex-shrink: 0;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
   }
 
   .vault-items-grid {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-top: 10px;
+    gap: 6px;
+    margin-top: 8px;
   }
 
   .vault-item-card {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    padding: 8px 10px;
-    border-radius: var(--radius-xs);
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
   }
 
   .vault-item-preview {
     position: relative;
-    width: 66px;
-    height: 42px;
-    min-width: 66px;
-    border-radius: 5px;
+    width: 56px;
+    height: 36px;
+    min-width: 56px;
+    border-radius: 4px;
     overflow: hidden;
     background: #000;
     flex-shrink: 0;
@@ -1846,15 +1854,20 @@ a:focus-visible {
 
   .vault-badge-quality {
     position: absolute;
-    bottom: 2px;
-    right: 2px;
-    background: rgba(0, 0, 0, 0.78);
+    bottom: 1.5px;
+    right: 1.5px;
+    background: rgba(0, 0, 0, 0.82);
     color: #ffffff;
     font-family: var(--font-mono);
-    font-size: 0.5rem;
-    padding: 1px 3px;
+    font-size: 0.42rem;
+    padding: 0.5px 2.5px;
     border-radius: 2px;
     font-weight: 600;
+    line-height: 1.1;
+    max-width: 48px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .vault-item-details {
@@ -1863,13 +1876,13 @@ a:focus-visible {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 3px;
+    gap: 2px;
   }
 
   .vault-item-title {
-    font-size: 0.78rem;
-    font-weight: 600;
-    line-height: 1.25;
+    font-size: 0.74rem;
+    font-weight: 550;
+    line-height: 1.22;
     color: var(--text-ivory);
     margin-bottom: 0;
     white-space: normal;
@@ -1890,14 +1903,14 @@ a:focus-visible {
 
   .vault-chip-fmt,
   .vault-chip-size {
-    font-size: 0.58rem;
-    padding: 1px 4px;
-    border-radius: 3px;
+    font-size: 0.54rem;
+    padding: 0.5px 3.5px;
+    border-radius: 2.5px;
     white-space: nowrap;
   }
 
   .vault-chip-time {
-    font-size: 0.58rem;
+    font-size: 0.55rem;
     color: var(--text-muted);
     white-space: nowrap;
   }
@@ -1905,26 +1918,31 @@ a:focus-visible {
   .vault-item-actions {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     flex-shrink: 0;
   }
 
   .btn-vault-save {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     background: linear-gradient(180deg, #d8b877 0%, #c5a059 100%);
     color: #ffffff;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 600;
-    padding: 5px 9px;
-    height: 28px;
+    padding: 0 8px;
+    height: 25px;
     border-radius: var(--radius-pill);
-    border: 1px solid rgba(0, 0, 0, 0.15);
-    box-shadow: 0 1px 4px rgba(197, 160, 89, 0.22);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 1px 3px rgba(197, 160, 89, 0.2);
     text-decoration: none;
     white-space: nowrap;
     cursor: pointer;
+  }
+
+  .btn-vault-save svg {
+    width: 11px;
+    height: 11px;
   }
 
   .vault-save-full {
@@ -1936,17 +1954,17 @@ a:focus-visible {
   }
 
   .btn-vault-delete {
-    width: 26px;
-    height: 26px;
-    min-width: 26px;
+    width: 23px;
+    height: 23px;
+    min-width: 23px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.04);
+    background: rgba(0, 0, 0, 0.03);
     border: 1px solid var(--border-subtle);
     color: var(--text-muted);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: 0.68rem;
     cursor: pointer;
   }
 
@@ -1960,28 +1978,39 @@ a:focus-visible {
 
 @media (max-width: 360px) {
   .vault-section {
-    padding: 10px 8px;
+    padding: 8px 6px;
   }
 
   .vault-item-card {
-    padding: 6px 6px;
+    padding: 5px 6px;
     gap: 6px;
   }
 
   .vault-item-preview {
-    width: 56px;
-    height: 36px;
-    min-width: 56px;
+    width: 50px;
+    height: 32px;
+    min-width: 50px;
   }
 
   .vault-item-title {
-    font-size: 0.74rem;
+    font-size: 0.7rem;
   }
 
   .btn-vault-save {
-    padding: 4px 7px;
-    height: 26px;
-    font-size: 0.66rem;
+    padding: 0 6px;
+    height: 23px;
+    font-size: 0.62rem;
+  }
+
+  .btn-vault-save svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  .btn-vault-delete {
+    width: 21px;
+    height: 21px;
+    min-width: 21px;
   }
 }
 
