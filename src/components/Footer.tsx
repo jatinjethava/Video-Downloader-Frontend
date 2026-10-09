@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="footer-root" id="main-footer">
       <div className="container">
         <div className="footer-grid">
-          
+
           <div className="brand-col">
             <div className="footer-brand">
               <div className="brand-monogram-box">
@@ -22,7 +22,7 @@ export default function Footer() {
             </p>
           </div>
 
-          
+
           <div className="footer-nav-matrix">
             <div className="matrix-col">
               <h4 className="matrix-title">Architecture</h4>
@@ -48,14 +48,14 @@ export default function Footer() {
           </div>
         </div>
 
-        
+
         <div className="footer-disclaimer-box">
           <p>
             <strong>LEGAL & USAGE PROTOCOL:</strong> VidFetch Atelier is designed strictly for educational media analysis, personal backup archival, and authorized public domain content. Users are solely responsible for ensuring adherence to copyright law, terms of digital service, and intellectual property provisions of host platforms.
           </p>
         </div>
 
-        
+
         <div className="footer-bottom-bar">
           <p className="copyright-line">© 2026 VIDFETCH ATELIER. ALL RIGHTS RESERVED.</p>
           <p className="craft-line">CRAFTED FOR CINEPHILES & DIGITAL ARCHIVISTS.</p>

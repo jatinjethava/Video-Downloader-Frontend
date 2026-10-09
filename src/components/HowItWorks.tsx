@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import { motion } from 'framer-motion';
 
 interface ProtocolStep {
@@ -45,9 +44,9 @@ export default function HowItWorks() {
 
         <div className="protocol-grid">
           {STEPS.map((item, idx) => (
-            <motion.div 
-              className="protocol-card luxury-card" 
-              key={idx} 
+            <motion.div
+              className="protocol-card luxury-card"
+              key={idx}
               id={`step-card-${idx}`}
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}

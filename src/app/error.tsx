@@ -19,7 +19,7 @@ export default function GlobalError({
         <div className="error-tag">RUNTIME ANOMALY</div>
         <h1 className="error-title editorial-title">Studio Protocol Interrupted</h1>
         <p className="error-message">
-          An unexpected computational interruption occurred while processing the atelier state.
+          {error.message || 'An unexpected computational interruption occurred while processing the atelier state.'}
         </p>
         <button
           type="button"

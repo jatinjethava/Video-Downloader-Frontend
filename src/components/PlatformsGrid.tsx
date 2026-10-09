@@ -81,7 +81,7 @@ export default function PlatformsGrid() {
   return (
     <section className="portals-section" id="platforms">
       <div className="container">
-        <motion.div 
+        <motion.div
           className="section-prologue"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -98,9 +98,9 @@ export default function PlatformsGrid() {
 
         <div className="portals-grid">
           {PLATFORMS.map((item, idx) => (
-            <motion.div 
-              className="portal-card luxury-card" 
-              key={idx} 
+            <motion.div
+              className="portal-card luxury-card"
+              key={idx}
               id={`platform-card-${idx}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}

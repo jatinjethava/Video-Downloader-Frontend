@@ -93,7 +93,8 @@ export default function DownloaderSection() {
           setPreservedDownloads(parsedDownloads);
         }
       }
-    } catch {
+    } catch (err) {
+      console.log("Error: ", err);
     }
   }, []);
 
@@ -117,6 +118,9 @@ export default function DownloaderSection() {
     }
     if (lower.includes('facebook.com') || lower.includes('fb.watch')) {
       return { name: 'Facebook Media', color: '#c5a059' };
+    }
+    if (lower.includes('pinterest.com') || lower.includes('pin.it')) {
+      return { name: 'Pinterest Video', color: '#c5a059' };
     }
     if (lower.includes('vimeo.com')) {
       return { name: 'Vimeo Showcase', color: '#c5a059' };
@@ -158,7 +162,8 @@ export default function DownloaderSection() {
           }
         }
       }
-    } catch {
+    } catch (err) {
+      console.log("Error: ", err);
     }
   };
 
