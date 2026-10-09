@@ -297,7 +297,7 @@ export default function DownloaderSection() {
 
             setPreservedDownloads((prev) => {
               const filtered = prev.filter((p) => p.jobId !== jobId);
-              const updated = [newRecord, ...filtered].slice(0, 12);
+              const updated = [newRecord, ...filtered].slice(0, 5);
               if (typeof window !== 'undefined') {
                 localStorage.setItem(STORAGE_KEY_DOWNLOADS, JSON.stringify(updated));
               }
