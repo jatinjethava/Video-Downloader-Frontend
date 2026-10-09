@@ -136,6 +136,10 @@ The UI handles the request flow, while the backend performs URL analysis, format
 - The app is designed around a premium media-download UX rather than raw utility output.
 - Media extraction and download processing is delegated to the backend service, not handled directly in the frontend.
 
+## Documentation
+
+https://drive.google.com/file/d/1YPo_qVwvzsYWbTPnnspklcKS9aA-JxC8/view?usp=sharing
+
 ## Contributing
 
 Contributions are welcome. Please open an issue or start a discussion before making larger changes.
